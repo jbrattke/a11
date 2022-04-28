@@ -8,9 +8,11 @@
 #include "bitmap.h"
 
 const int DIR_SIZE = sizeof(dirent_t); //directory size
+int rootNodeIndex;
 
 void directory_init() {
-  inode_t* rootDirNode = get_inode(alloc_inode());
+  rootNodeIndex = alloc_inode();
+  inode_t* rootDirNode = get_inode(rootNodeIndex);
   rootDirNode->mode = 040755;
 }
 

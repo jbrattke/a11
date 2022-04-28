@@ -23,21 +23,21 @@ inode_t *get_inode(int inum) {
 // Allocates space for an inode, returns inode index on success, -1 on failure
 int alloc_inode() {
   int nodeIndex = -1;
-  void* blockBitMap = get_inode_bitmap(); 
+  void* nodeBitMap = get_inode_bitmap(); 
   for(int i = 0; i < BLOCK_COUNT_i; i++) {
-    if(bitmap_get(blockBitMap, i) == 0) {
+    if(bitmap_get(nodeBitMap, i) == 0) {
       nodeIndex = i;
       printf("inode alloced at: %d\n", nodeIndex);
       break;
     }
   }
-  bitmap_put(get_inode_bitmap(), nodeIndex, 1);
+  bitmap_put(nodeBitMap, nodeIndex, 1);
 
-  inode_t* nodeAlloc = get_inode(nodeIndex);
-  nodeAlloc->mode = 0;
-  nodeAlloc->size = 0;
-  nodeAlloc->refs = 1;
-  nodeAlloc->block = alloc_block();
+  inode_t* newNode = get_inode(nodeIndex);
+  newNode->mode = 0;
+  newNode->size = 0;
+  newNode->refs = 1;
+  newNode->block = alloc_block();
 
   return nodeIndex;
 }
