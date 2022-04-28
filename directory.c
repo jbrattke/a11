@@ -109,5 +109,4 @@ void print_directory(inode_t *dd) {
   for(int i = 0; i < dd->size / DIR_SIZE; i++) {
     printf("Name : %s -- Node : %d -- Active : %d\n", pathDirec[i].name, pathDirec[i].inum, pathDirec[i].active);
   }
-  return output;
 }

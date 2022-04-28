@@ -7,7 +7,7 @@
 
 const int BLOCK_COUNT_i = 256; // we split the "disk" into 256 blocks
 const int BLOCK_SIZE_i = 4096; // = 4K
-const int NUFS_SIZE = BLOCK_SIZE_i * BLOCK_COUNT_i; // = 1MB
+const int NUFS_SIZE_i = BLOCK_SIZE_i * BLOCK_COUNT_i; // = 1MB
 const int BLOCK_BITMAP_SIZE_i = BLOCK_COUNT_i / 8;
 
 void print_inode(inode_t *node) {
@@ -27,6 +27,7 @@ int alloc_inode() {
   for(int i = 0; i < BLOCK_COUNT_i; i++) {
     if(bitmap_get(blockBitMap, i) == 0) {
       nodeIndex = i;
+      printf("inode alloced at: %d\n", nodeIndex);
       break;
     }
   }

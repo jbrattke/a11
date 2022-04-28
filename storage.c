@@ -10,7 +10,6 @@
 #include "directory.h"
 #include "inode.h"
 #include "bitmap.h"
-#include "util.h"
 
 //init storage
 void storage_init(const char *path) {
@@ -73,10 +72,11 @@ int storage_mknod(const char *path, int mode) {
   
   filePath[0] = 0;
   while(pathList->next != NULL) {
-    strncat(filePath, pathList->data, 48);
+    strncat(filePath, pathList->data, 47);
     pathList = pathList->next;
   }
   memcpy(fileName, pathList->data, strlen(pathList->data));
+  printf("fn: %s -- fp: %s\n", fileName, filePath);
 
   int fpNodeIndex = tree_lookup(filePath);
   if (fpNodeIndex == -1) {
@@ -87,12 +87,14 @@ int storage_mknod(const char *path, int mode) {
   inode_t* fpNode = get_inode(fpNodeIndex);
 
   int fileNodeIndex = alloc_inode();
+  printf("fpni: %d -- fni: %d\n", fpNodeIndex, fileNodeIndex);
   inode_t* fileNode = get_inode(fileNodeIndex);
   fileNode->mode = mode;
   fileNode->refs = 1;
   fileNode->size = 0;
 
   directory_put(fpNode, fileName, fileNodeIndex);
+  s_free(pathList);
   free(filePath);
   free(fileName);
   return 0;
