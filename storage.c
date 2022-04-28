@@ -87,7 +87,7 @@ int storage_mknod(const char *path, int mode) {
   inode_t* fpNode = get_inode(fpNodeIndex);
 
   int fileNodeIndex = alloc_inode();
-  printf("fpni: %d -- fni: %d\n", fpNodeIndex, fileNodeIndex);
+  printf("fni: %d -- fpni: %d\n", fileNodeIndex, fpNodeIndex);
   inode_t* fileNode = get_inode(fileNodeIndex);
   fileNode->mode = mode;
   fileNode->refs = 1;

@@ -19,7 +19,7 @@ void directory_init() {
 // Fetches a specific directory from the given inode using directory ‘name’ inside the “tree” of the file system.
 int directory_lookup(inode_t *dd, const char *name) {
   if (strcmp(name, "") == 0 || strcmp(name, "/") == 0) { //root dir
-    return 0; //bc root directory is in inode 0
+    return rootNodeIndex; //bc root directory is in inode 0
   } else {
 
     dirent_t* directories = blocks_get_block(dd->block);
@@ -37,6 +37,9 @@ int directory_lookup(inode_t *dd, const char *name) {
 
 // Search for given path from root, return inode index, -1 on failure
 int tree_lookup(const char *path) {
+  if (strcmp(name, "") == 0 || strcmp(name, "/") == 0) {
+    return rootNodeIndex;
+  }
   int inodeIndex = 0;
   slist_t* explodedPath = s_explode(path, '/', 0);
 

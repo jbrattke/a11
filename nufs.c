@@ -58,6 +58,10 @@ int nufs_getattr(const char *path, struct stat *st) {
 // lists the contents of a directory
 int nufs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
                  off_t offset, struct fuse_file_info *fi) {
+
+  int pathNodeIndex = tree_lookup(path);
+  inode_t* pathNode = get_inode(pathNodeIndex);
+  print_directory(pathNode);
   // struct stat st;
   // int rv;
 
@@ -129,12 +133,14 @@ int nufs_mkdir(const char *path, mode_t mode) {
 
 int nufs_unlink(const char *path) {
   int rv = -1;
+  rv = storage_unlink(path);
   printf("unlink(%s) -> %d\n", path, rv);
   return rv;
 }
 
 int nufs_link(const char *from, const char *to) {
   int rv = -1;
+    rv = storage_link(to, from);
   printf("link(%s => %s) -> %d\n", from, to, rv);
   return rv;
 }
