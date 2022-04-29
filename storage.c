@@ -41,23 +41,55 @@ int storage_stat(const char *path, struct stat *st) {
 
 
 int storage_read(const char *path, char *buf, size_t size, off_t offset) {
-  inode_t* inodeIndex = get_inode(tree_lookup(path));
-  char* readSrc = blocks_get_block(inodeIndex->block);
-  printf("READING: %s\n", readSrc);
+  // inode_t* inodeIndex = get_inode(tree_lookup(path));
+  // char* readSrc = blocks_get_block(inodeIndex->block);
+  // printf("READING: %s\n", readSrc);
   // readSrc += offset;
   // memcpy(buf, readSrc, size);
-  strcpy(buf, "myworld\n");
-  printf("(storage_read) Path: %s -- Buf: %s\n", path, buf);
-  return 8;
+  // printf("(storage_read) Path: %s -- Buf: %s\n", path, buf);
+  // return size;
+  printf("storage_read called, buffer is\n%s\n", buf);
+  inode_t* node = get_inode(tree_lookup(path));
+  int bindex = 0;
+  int nindex = offset;
+  int rem = size;
+  while (rem > 0) {
+    char* src = blocks_get_block(node->block);
+    src += nindex % 4096;
+    int cpyamnt = min(rem, 4096 - (nindex % 4096));
+    memcpy(buf + bindex, src, cpyamnt);
+    bindex += cpyamnt;
+    nindex += cpyamnt;
+    rem -= cpyamnt;
+  }
+  return size;
 }
 
 int storage_write(const char *path, const char *buf, size_t size, off_t offset) {
-  inode_t* inodeIndex = get_inode(tree_lookup(path));
-  char* writeSrc = blocks_get_block(inodeIndex->block);
-  writeSrc += offset;
-  memcpy(writeSrc, buf, size);
-  printf("(storage_write) Path: %s -- Buf: %s\n", path, buf);
-  return size;
+  // inode_t* inodeIndex = get_inode(tree_lookup(path));
+  // char* writeSrc = blocks_get_block(inodeIndex->block);
+  // writeSrc += offset;
+  // memcpy(writeSrc, buf, size);
+  // printf("(storage_write) Path: %s -- Buf: %s\n", path, buf);
+  // return size;
+  // get the start point with the path
+  inode_t* write_node = get_inode(tree_lookup(path));
+  if (write_node->size < size + offset) {
+      storage_truncate(path, size + offset);
+  }
+  int bindex = 0;
+  int nindex = offset;
+  int rem = size;
+  while (rem > 0) {
+    char* dest = pages_get_page(node->block);
+    dest += nindex % 4096;
+    int cpyamnt = min(rem, 4096 - (nindex % 4096));
+    memcpy(dest, buf + bindex, cpyamnt);
+    bindex += cpyamnt;
+    nindex += cpyamnt;
+    rem -= cpyamnt;
+  }
+  return size;    
 }
 
 int storage_truncate(const char *path, off_t size) {
