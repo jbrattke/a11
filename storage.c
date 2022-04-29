@@ -120,14 +120,14 @@ int storage_mknod(const char *path, int mode) {
 int storage_unlink(const char *path) {
   char* fileName = malloc(48); //max file name size 48
   char* filePath = malloc(strlen(path)); //file/direc path without file(root directory path?)
-  slist_t* pathList = s_explode(path, "/", 1);
+  slist_t* pathList = s_explode(path, '/', 1);
   
   filePath[0] = 0;
   while(pathList->next != NULL) {
     strncat(filePath, pathList->data, 48);
     pathList = pathList->next;
   }
-  strncpy(fileName, pathList->data + 1, strlen(pathList->data));
+  strncpy(fileName, pathList->data, strlen(pathList->data));
   memcpy(fileName, fileName, strlen(pathList->data));
   s_free(pathList);
   // fileName = basename(path);
@@ -135,8 +135,8 @@ int storage_unlink(const char *path) {
 
   printf("UNLINK -- fn: %s -- fp: %s\n", fileName, filePath);
   
-  inode_t* parent = get_inode(tree_lookup(filePath));
-  int rv = directory_delete(parent, fileName);
+  inode_t* pathNode = get_inode(tree_lookup(filePath));
+  int rv = directory_delete(pathNode, fileName);
 
   free(filePath);
   free(fileName);
@@ -144,21 +144,21 @@ int storage_unlink(const char *path) {
   return rv;
 }
 int storage_link(const char *from, const char *to) {  
-  int tnum = tree_lookup(to);
-  if (tnum < 0) {
-      return tnum;
+  int toPathNodeIndex = tree_lookup(to);
+  if (toPathNodeIndex == -1) {
+    return -1;
   }
 
   char* fileName = malloc(48); //max file name size 48
   char* filePath = malloc(strlen(from)); //file/direc path without file(root directory path?)
-  slist_t* pathList = s_explode(from, "/", 1);
+  slist_t* pathList = s_explode(from, '/', 1);
   
   filePath[0] = 0;
   while(pathList->next != NULL) {
-    strncat(filePath, pathList->data, 47);
+    strncat(filePath, pathList->data, 48);
     pathList = pathList->next;
   }
-  strncpy(fileName, pathList->data + 1, strlen(pathList->data));
+  strncpy(fileName, pathList->data, strlen(pathList->data));
   memcpy(fileName, fileName, strlen(pathList->data));
   s_free(pathList);
   // fileName = basename(from);
@@ -166,9 +166,9 @@ int storage_link(const char *from, const char *to) {
 
   printf("(storage_link) From: %s -- To: %s -- FileName: %s -- FilePath: %s\n", from, to, fileName, filePath);
 
-  inode_t* pnode = get_inode(tree_lookup(filePath));
-  directory_put(pnode, fileName, tnum);
-  get_inode(tnum)->refs ++;
+  inode_t* fromPathNode = get_inode(tree_lookup(filePath));
+  directory_put(fromPathNode, fileName, toPathNodeIndex);
+  get_inode(toPathNodeIndex)->refs ++;
 
   free(fileName);
   free(filePath);
@@ -176,7 +176,8 @@ int storage_link(const char *from, const char *to) {
 }
 int storage_rename(const char *from, const char *to) {
   printf("(storage_rename) From: %s -- To: %s\n", from, to);
-  
+  storage_link(to, from);
+  storage_unlink(from);
   return 0;
 }
 int storage_set_time(const char *path, const struct timespec ts[2]) {
