@@ -37,7 +37,7 @@ int directory_lookup(inode_t *dd, const char *name) {
 
 // Search for given path from root, return inode index, -1 on failure
 int tree_lookup(const char *path) {
-  if (strcmp(name, "") == 0 || strcmp(name, "/") == 0) {
+  if (strcmp(path, "") == 0 || strcmp(path, "/") == 0) {
     return rootNodeIndex;
   }
   int inodeIndex = 0;

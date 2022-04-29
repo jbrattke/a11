@@ -36,7 +36,7 @@ int nufs_getattr(const char *path, struct stat *st) {
   int rv = 0;
 
   // Return some metadata for the root directory...
-  if (strcmp(path, "/") == 0) {
+  if (strcmp(path, "/") == 0 || strcmp(path, "") == 0) {
     st->st_mode = 040755; // directory
     st->st_size = 0;
     st->st_uid = getuid();
@@ -62,6 +62,10 @@ int nufs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
   int pathNodeIndex = tree_lookup(path);
   inode_t* pathNode = get_inode(pathNodeIndex);
   print_directory(pathNode);
+
+  for(int i = 0; i < pathNode->size / DIR_SIZE; i++) {
+    printf("Name : %s -- Node : %d -- Active : %d\n", pathDirec[i].name, pathDirec[i].inum, pathDirec[i].active);
+  }
   // struct stat st;
   // int rv;
 
@@ -82,15 +86,14 @@ int nufs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
   rv = nufs_getattr(path, &st);
   assert(rv == 0);
 
-  slist_t* dirnames = storage_list(path);
+  slist_t* pathFiles = storage_list(path);
   filler(buf, ".", &st, 0);
   if (dirnames == NULL) {
     printf("readdir(%s) -> %d\n", path, rv);
     return 0;
   }
-
-  slist_t* currname = dirnames;
-  while(currname != NULL) {
+  
+  while(pathFiles != NULL) {
     char currpath[strlen(path) + 50];
     strncpy(currpath, path, strlen(path));
     
@@ -140,7 +143,7 @@ int nufs_unlink(const char *path) {
 
 int nufs_link(const char *from, const char *to) {
   int rv = -1;
-    rv = storage_link(to, from);
+  rv = storage_link(to, from);
   printf("link(%s => %s) -> %d\n", from, to, rv);
   return rv;
 }
