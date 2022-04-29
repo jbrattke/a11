@@ -105,7 +105,7 @@ int nufs_link(const char *from, const char *to) {
 int nufs_rmdir(const char *path) {
   int rv = -1;
   rv = directory_delete(get_inode(tree_lookup(path)), basename(path));
-  printf("rmdir(%s) -> %d\n", path, rv);
+  printf("rmdir(%s) -> %d ---- %s\n", path, rv, basename(path));
   return rv;
 }
 
