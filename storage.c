@@ -69,17 +69,17 @@ int storage_mknod(const char *path, int mode) {
 
   char* fileName = malloc(48); //max file name size 48
   char* filePath = malloc(strlen(path)); //file/direc path without file(root directory path?)
-  // slist_t* pathList = s_explode(path, "/", 1);
+  slist_t* pathList = s_explode(path, "/", 1);
   
-  // filePath[0] = 0;
-  // while(pathList->next != NULL) {
-  //   strncat(filePath, pathList->data, 47);
-  //   pathList = pathList->next;
-  // }
-  // memcpy(fileName, pathList->data, strlen(pathList->data));
-  // s_free(pathList);
-  fileName = basename(path);
-  filePath = dirname(path);
+  filePath[0] = 0;
+  while(pathList->next != NULL) {
+    strncat(filePath, pathList->data, 47);
+    pathList = pathList->next;
+  }
+  memcpy(fileName, pathList->data, strlen(pathList->data));
+  s_free(pathList);
+  // fileName = basename(path);
+  // filePath = dirname(path);
   
   printf("fn: %s -- fp: %s\n", fileName, filePath);
 
@@ -108,18 +108,18 @@ int storage_mknod(const char *path, int mode) {
 int storage_unlink(const char *path) {
   char* fileName = malloc(48); //max file name size 48
   char* filePath = malloc(strlen(path)); //file/direc path without file(root directory path?)
-  // slist_t* pathList = s_explode(path, "/", 1);
+  slist_t* pathList = s_explode(path, "/", 1);
   
-  // filePath[0] = 0;
-  // while(pathList->next != NULL) {
-  //   strncat(filePath, pathList->data, 47);
-  //   pathList = pathList->next;
-  // }
-  // memcpy(fileName, pathList->data, strlen(pathList->data));
-  // s_free(pathList);
+  filePath[0] = 0;
+  while(pathList->next != NULL) {
+    strncat(filePath, pathList->data, 47);
+    pathList = pathList->next;
+  }
+  memcpy(fileName, pathList->data, strlen(pathList->data));
+  s_free(pathList);
 
-  fileName = basename(path);
-  filePath = dirname(path);
+  // fileName = basename(path);
+  // filePath = dirname(path);
   
   inode_t* parent = get_inode(tree_lookup(filePath));
   int rv = directory_delete(parent, fileName);
@@ -137,18 +137,18 @@ int storage_link(const char *from, const char *to) {
 
   char* fileName = malloc(48); //max file name size 48
   char* filePath = malloc(strlen(from)); //file/direc path without file(root directory path?)
-  // slist_t* pathList = s_explode(from, "/", 1);
+  slist_t* pathList = s_explode(from, "/", 1);
   
-  // filePath[0] = 0;
-  // while(pathList->next != NULL) {
-  //   strncat(filePath, pathList->data, 47);
-  //   pathList = pathList->next;
-  // }
-  // memcpy(fileName, pathList->data, strlen(pathList->data));
-  // s_free(pathList);
+  filePath[0] = 0;
+  while(pathList->next != NULL) {
+    strncat(filePath, pathList->data, 47);
+    pathList = pathList->next;
+  }
+  memcpy(fileName, pathList->data, strlen(pathList->data));
+  s_free(pathList);
 
-  fileName = basename(from);
-  filePath = dirname(from);
+  // fileName = basename(from);
+  // filePath = dirname(from);
 
   inode_t* pnode = get_inode(tree_lookup(filePath));
   directory_put(pnode, fileName, tnum);

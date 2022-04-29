@@ -69,7 +69,7 @@ int nufs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
   //   printf("Name : %s -- Node : %d -- Active : %d\n", pathDirec[i].name, pathDirec[i].inum, pathDirec[i].active);
   // }
 
-  
+  //--------------------------------------------------------------------
   // struct stat st;
   // int rv;
 
