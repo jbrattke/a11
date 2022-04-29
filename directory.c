@@ -13,7 +13,7 @@ const int DIR_SIZE = sizeof(dirent_t); //directory size
 int rootNodeIndex;
 
 void directory_init() {
-  printf("directory_init executing\n");
+  printf("(directory_init) executing\n");
   
   rootNodeIndex = alloc_inode();
   inode_t* rootDirNode = get_inode(rootNodeIndex);
@@ -23,7 +23,7 @@ void directory_init() {
 // Fetches a specific directory from the given inode using directory ‘name’ inside the “tree” of the file system.
 int directory_lookup(inode_t *dd, const char *name) {
   if (strcmp(name, "") == 0 || strcmp(name, "/") == 0) { //root dir
-    printf("directory_lookup ROOT DIRECTORY: %d\n", rootNodeIndex);
+    printf("(directory_lookup) ROOT DIRECTORY: %d\n", rootNodeIndex);
     return rootNodeIndex; //bc root directory is in inode 0
   } else {
   
@@ -32,12 +32,12 @@ int directory_lookup(inode_t *dd, const char *name) {
     for(int i = 0; i < 32; i++) {
       dirent_t subdir = directories[i];
       if (strcmp(name, subdir.name) == 0) {
-        printf("directory_lookup NAME FOUND: %s -- Index: %d\n", name, subdir.inum);
+        printf("(directory_lookup) NAME FOUND: %s -- Index: %d\n", name, subdir.inum);
         return subdir.inum; //name found
       }
     }
 
-    printf("directory_lookup NOT FOUND: %d\n", -1);
+    printf("(directory_lookup) NOT FOUND: %s\n", name);
 
     return -1; //when not found
   }
@@ -46,7 +46,7 @@ int directory_lookup(inode_t *dd, const char *name) {
 // Search for given path from root, return inode index, -1 on failure
 int tree_lookup(const char *path) {
   if (strcmp(path, "") == 0 || strcmp(path, "/") == 0) {
-    printf("tree_lookup ROOT: %d\n", rootNodeIndex);
+    printf("(tree_lookup) Path: %s -- Index: %d\n", path, rootNodeIndex);
     return rootNodeIndex;
   }
   int inodeIndex = 0;
@@ -59,7 +59,7 @@ int tree_lookup(const char *path) {
   }
   
   s_free(explodedPath);
-  printf("tree_lookup inodeIndex: %d\n", inodeIndex);
+  printf("(tree_lookup) Path: %s -- Index: %d\n", path, inodeIndex);
   return inodeIndex;
 }
 
@@ -85,7 +85,7 @@ int directory_put(inode_t *dd, const char *name, int inum) {
     dd->size += DIR_SIZE;
   }
 
-  printf("directory_put (always returns 0): %d\n", 0);
+  printf("(directory_put) Directory Name: %s -- inum: %d\n", name, inum);
 
   return 0;
 }
@@ -97,7 +97,7 @@ int directory_delete(inode_t *dd, const char *name) {
     printf("DIREC: %s vs %s -- %d\n", currentDirec[i].name, name, currentDirec[i].active);
     if (strcmp(currentDirec[i].name, name) == 0 && currentDirec[i].active == 1) {
       currentDirec[i].active = 0;
-      printf("directory_delete (currentDirec[i].name = given name && currentDirec[i].active == 1) return 0: %d\n", 0);
+      printf("(directory_delete) deleting Directory Name: %s\n", name);
       return 0;
     }
   }
@@ -118,7 +118,7 @@ slist_t *directory_list(const char *path) {
       output = s_cons(pathDirec[i].name, output);
     }
   }
-  printf("directory_list s: \n");
+  // printf("(directory_list) Path: %s -- Output: \n", path, output);
   return output;
 }
 
