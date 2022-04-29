@@ -15,6 +15,8 @@
 
 //init storage
 void storage_init(const char *path) {
+  printf("storage_init executing\n");
+  
   blocks_init(path); //init blocks needed for storage
 
   int inodeBlock = alloc_block();
@@ -26,6 +28,8 @@ void storage_init(const char *path) {
 
 
 int storage_stat(const char *path, struct stat *st) {
+  printf("storage_stat executing\n");
+  
   int rv = tree_lookup(path);
   if(rv != -1) {
     inode_t* pathNode = get_inode(rv);
@@ -39,6 +43,8 @@ int storage_stat(const char *path, struct stat *st) {
 
 
 int storage_read(const char *path, char *buf, size_t size, off_t offset) {
+  printf("storage_read executing\n");
+  
   inode_t* inodeIndex = get_inode(tree_lookup(path));
   char* readSrc = blocks_get_block(inodeIndex->block);
   readSrc += offset;
@@ -47,6 +53,8 @@ int storage_read(const char *path, char *buf, size_t size, off_t offset) {
 }
 
 int storage_write(const char *path, const char *buf, size_t size, off_t offset) {
+  printf("storage_write executing\n");
+  
   inode_t* inodeIndex = get_inode(tree_lookup(path));
   char* writeSrc = blocks_get_block(inodeIndex->block);
   writeSrc += offset;
@@ -55,6 +63,8 @@ int storage_write(const char *path, const char *buf, size_t size, off_t offset) 
 }
 
 int storage_truncate(const char *path, off_t size) {
+  printf("storage_truncate executing\n");
+  
   int pathNodeIndex = tree_lookup(path);
   inode_t* pathNode = get_inode(pathNodeIndex);
   if (pathNode->size < size) {
@@ -66,6 +76,8 @@ int storage_truncate(const char *path, off_t size) {
 }
 
 int storage_mknod(const char *path, int mode) {
+  printf("storage_mknod -- path: %s\n", path);
+  
   if (tree_lookup(path) != -1) { //check if path already exists
     return -EEXIST;
   }
@@ -76,7 +88,8 @@ int storage_mknod(const char *path, int mode) {
   
   filePath[0] = 0;
   while(pathList->next != NULL) {
-    strncat(filePath, pathList->data, 47);
+    printf("Pathlist data: %s\n", pathList->data);
+    strncat(filePath, pathList->data, 48);
     pathList = pathList->next;
   }
   strncpy(fileName, pathList->data + 1, strlen(pathList->data));
@@ -110,6 +123,8 @@ int storage_mknod(const char *path, int mode) {
 }
 
 int storage_unlink(const char *path) {
+  printf("storage_unlink executing\n");
+  
   char* fileName = malloc(48); //max file name size 48
   char* filePath = malloc(strlen(path)); //file/direc path without file(root directory path?)
   slist_t* pathList = s_explode(path, "/", 1);
@@ -136,6 +151,8 @@ int storage_unlink(const char *path) {
   return rv;
 }
 int storage_link(const char *from, const char *to) {
+  printf("storage_link executing\n");
+  
   int tnum = tree_lookup(to);
   if (tnum < 0) {
       return tnum;
@@ -165,9 +182,13 @@ int storage_link(const char *from, const char *to) {
   return 0;
 }
 int storage_rename(const char *from, const char *to) {
+  printf("storage_rename executing\n");
+  
   return 0;
 }
 int storage_set_time(const char *path, const struct timespec ts[2]) {
+  printf("storage_set_time executing\n");
+  
   int pathNodeIndex = tree_lookup(path);
   if (pathNodeIndex == -1) {
     return -ENOENT;
@@ -180,5 +201,6 @@ int storage_set_time(const char *path, const struct timespec ts[2]) {
   return 0;
 }
 slist_t *storage_list(const char *path) {
+  printf("storage_list executing\n");
   return directory_list(path);
 }

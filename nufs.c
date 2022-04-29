@@ -21,6 +21,8 @@
 // implementation for: man 2 access
 // Checks if a file exists.
 int nufs_access(const char *path, int mask) {
+  printf("nufs_access executing");
+  
   int rv = tree_lookup(path);
   if (rv != -1) {
     inode_t* node = get_inode(rv);
@@ -35,6 +37,8 @@ int nufs_access(const char *path, int mask) {
 // Implementation for: man 2 stat
 // This is a crucial function.
 int nufs_getattr(const char *path, struct stat *st) {
+  printf("nufs_getattr executing");
+  
   int rv = 0;
 
   // Return some metadata for the root directory...
@@ -60,6 +64,8 @@ int nufs_getattr(const char *path, struct stat *st) {
 // lists the contents of a directory
 int nufs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
                  off_t offset, struct fuse_file_info *fi) {
+  
+  
   // int pathNodeIndex = tree_lookup(path);
   // inode_t* pathNode = get_inode(pathNodeIndex);
   // print_directory(pathNode);

@@ -13,6 +13,8 @@ const int DIR_SIZE = sizeof(dirent_t); //directory size
 int rootNodeIndex;
 
 void directory_init() {
+  printf("directory_init executing\n");
+  
   rootNodeIndex = alloc_inode();
   inode_t* rootDirNode = get_inode(rootNodeIndex);
   rootDirNode->mode = 040755;
@@ -21,17 +23,21 @@ void directory_init() {
 // Fetches a specific directory from the given inode using directory ‘name’ inside the “tree” of the file system.
 int directory_lookup(inode_t *dd, const char *name) {
   if (strcmp(name, "") == 0 || strcmp(name, "/") == 0) { //root dir
+    printf("directory_lookup ROOT DIRECTORY: %d\n", rootNodeIndex);
     return rootNodeIndex; //bc root directory is in inode 0
   } else {
-
+  
     dirent_t* directories = blocks_get_block(dd->block);
 
     for(int i = 0; i < 32; i++) {
       dirent_t subdir = directories[i];
       if (strcmp(name, subdir.name) == 0) {
+        printf("directory_lookup NAME FOUND: %d\n", subdir.inum);
         return subdir.inum; //name found
       }
     }
+
+    printf("directory_lookup NOT FOUND: %d\n", -1);
 
     return -1; //when not found
   }
@@ -39,6 +45,8 @@ int directory_lookup(inode_t *dd, const char *name) {
 
 // Search for given path from root, return inode index, -1 on failure
 int tree_lookup(const char *path) {
+  printf("tree_lookup executing\n");
+  
   if (strcmp(path, "") == 0 || strcmp(path, "/") == 0) {
     return rootNodeIndex;
   }
@@ -57,6 +65,8 @@ int tree_lookup(const char *path) {
 
 // Inserts a new directory
 int directory_put(inode_t *dd, const char *name, int inum) {
+  printf("directory_put executing\n");
+  
   dirent_t* currentDirec = blocks_get_block(dd->block);
 
   dirent_t newDirec;
@@ -82,6 +92,8 @@ int directory_put(inode_t *dd, const char *name, int inum) {
 
 
 int directory_delete(inode_t *dd, const char *name) {
+  printf("directory_delete executing\n");
+  
   dirent_t* currentDirec = blocks_get_block(dd->block);
   for (int i = 0; i < dd->size / DIR_SIZE; i++) {
     printf("DIREC: %s vs %s -- %d\n", currentDirec[i].name, name, currentDirec[i].active);
@@ -96,6 +108,8 @@ int directory_delete(inode_t *dd, const char *name) {
 
 // Gives the list of directories at the given path
 slist_t *directory_list(const char *path) {
+  printf("directory_list executing\n");
+  
   int pathNodeIndex = tree_lookup(path);
   inode_t* pathNode = get_inode(pathNodeIndex);
 
@@ -111,6 +125,8 @@ slist_t *directory_list(const char *path) {
 }
 
 void print_directory(inode_t *dd) {
+  printf("print_directory executing\n");
+  
   dirent_t* pathDirec = blocks_get_block(dd->block);
 
   slist_t* output = NULL;
@@ -120,6 +136,8 @@ void print_directory(inode_t *dd) {
 }
 
 int read_directory(const char *path, void *buf, fuse_fill_dir_t filler) {
+  printf("read_directory executing\n");
+  
   struct stat st;
   int pathNodeIndex = tree_lookup(path);
   inode_t* pathNode = get_inode(pathNodeIndex);
