@@ -116,7 +116,7 @@ int storage_unlink(const char *path) {
   
   filePath[0] = 0;
   while(pathList->next != NULL) {
-    strncat(filePath, pathList->data, 48;
+    strncat(filePath, pathList->data, 48);
     pathList = pathList->next;
   }
   strncpy(fileName, pathList->data + 1, strlen(pathList->data));

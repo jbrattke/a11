@@ -104,8 +104,25 @@ int nufs_link(const char *from, const char *to) {
 
 int nufs_rmdir(const char *path) {
   int rv = -1;
-  rv = directory_delete(get_inode(tree_lookup(path)), basename(path));
-  printf("rmdir(%s) -> %d ---- %s\n", path, rv, basename(path));
+
+  char* fileName = malloc(48); //max file name size 48
+  char* filePath = malloc(strlen(path)); //file/direc path without file(root directory path?)
+  slist_t* pathList = s_explode(path, "/", 1);
+  
+  filePath[0] = 0;
+  while(pathList->next != NULL) {
+    strncat(filePath, pathList->data, 47);
+    pathList = pathList->next;
+  }
+  strncpy(fileName, pathList->data + 1, strlen(pathList->data));
+  memcpy(fileName, fileName, strlen(pathList->data));
+  s_free(pathList);
+  
+  rv = directory_delete(get_inode(tree_lookup(filePath)), fileName);
+  printf("rmdir(%s) -> %d ---- %s -- %s\n", path, rv, fileName, filePath);
+
+  free(fileName);
+  free(filePath);
   return rv;
 }
 

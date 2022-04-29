@@ -90,7 +90,7 @@ int directory_delete(inode_t *dd, const char *name) {
       return 0;
     }
   }
-  printf("file not found");
+  printf("file not found\n");
   return -ENOENT;
 }
 
@@ -126,7 +126,9 @@ int read_directory(const char *path, void *buf, fuse_fill_dir_t filler) {
   dirent_t* pathDirec = blocks_get_block(pathNode->block);
 
   for(int i = 0; i < pathNode->size / DIR_SIZE; i++) {
-    filler(buf, pathDirec[i].name, &st, 0);
+    if (pathDirec[i].active == 1) {
+      filler(buf, pathDirec[i].name, &st, 0); 
+    }
   }
   return 0;
 }
