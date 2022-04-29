@@ -44,6 +44,7 @@ int nufs_getattr(const char *path, struct stat *st) {
   }
   else {
     rv = storage_stat(path, st);
+    st->st_mode = 0100644;
     st->st_uid = getuid();
   }
   if (rv == -1) {
