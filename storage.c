@@ -59,22 +59,6 @@ int storage_read(const char *path, char *buf, size_t size, off_t offset) {
   memcpy(buf, readSrc, size);
   printf("(storage_read) Path: %s -- Buf: %s\n", path, buf);
   return size;
-  
-  // printf("storage_read called, buffer is\n%s\n", buf);
-  // inode_t* node = get_inode(tree_lookup(path));
-  // int bindex = 0;
-  // int nindex = offset;
-  // int rem = size;
-  // while (rem > 0) {
-  //   char* src = blocks_get_block(node->block);
-  //   src += nindex % 4096;
-  //   int cpyamnt = rem;
-  //   memcpy(buf + bindex, src, cpyamnt);
-  //   bindex += cpyamnt;
-  //   nindex += cpyamnt;
-  //   rem -= cpyamnt;
-  // }
-  // return size;
 }
 
 int storage_write(const char *path, const char *buf, size_t size, off_t offset) {
@@ -87,25 +71,6 @@ int storage_write(const char *path, const char *buf, size_t size, off_t offset) 
   memcpy(writeSrc, buf, size);
   printf("(storage_write) Path: %s -- Buf: %s\n", path, buf);
   return size;
-  
-  // // get the start point with the path
-  // inode_t* write_node = get_inode(tree_lookup(path));
-  // if (write_node->size < size + offset) {
-  //   storage_truncate(path, size + offset);
-  // }
-  // int bindex = 0;
-  // int nindex = offset;
-  // int rem = size;
-  // while (rem > 0) {
-  //   char* dest = blocks_get_block(node->block);
-  //   dest += nindex % 4096;
-  //   int cpyamnt = rem;
-  //   memcpy(dest, buf + bindex, cpyamnt);
-  //   bindex += cpyamnt;
-  //   nindex += cpyamnt;
-  //   rem -= cpyamnt;
-  // }
-  // return size;    
 }
 
 int storage_mknod(const char *path, int mode) {

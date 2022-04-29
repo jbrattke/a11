@@ -10,12 +10,11 @@
 #include "bitmap.h"
 
 const int DIR_SIZE = sizeof(dirent_t); //directory size
-int rootNodeIndex;
+int rootNodeIndex = -1;
 
 void directory_init() {
-  printf("(directory_init) executing\n");
-  
   rootNodeIndex = alloc_inode();
+  printf("(directory_init) executing: root node at %d\n", rootNodeIndex);
   inode_t* rootDirNode = get_inode(rootNodeIndex);
   rootDirNode->mode = 040755;
 }
@@ -24,7 +23,7 @@ void directory_init() {
 int directory_lookup(inode_t *dd, const char *name) {
   if (strcmp(name, "") == 0 || strcmp(name, "/") == 0) { //root dir
     printf("(directory_lookup) ROOT DIRECTORY: %d\n", rootNodeIndex);
-    return rootNodeIndex; //bc root directory is in inode 0
+    return 0; //bc root directory is in inode 0
   } else {
   
     dirent_t* directories = blocks_get_block(dd->block);
@@ -46,8 +45,8 @@ int directory_lookup(inode_t *dd, const char *name) {
 // Search for given path from root, return inode index, -1 on failure
 int tree_lookup(const char *path) {
   if (strcmp(path, "") == 0 || strcmp(path, "/") == 0) {
-    printf("(tree_lookup) Path: %s -- Index: %d\n", path, rootNodeIndex);
-    return rootNodeIndex;
+    printf("(tree_lookup) ROOT - Path: %s -- Index: %d\n", path, rootNodeIndex);
+    return 0;
   }
   int inodeIndex = 0;
   slist_t* explodedPath = s_explode(path, '/', 0);
