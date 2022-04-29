@@ -8,12 +8,15 @@
 #define INODE_H
 
 #include "blocks.h"
+#include <time.h>
 
 typedef struct inode {
   int refs;  // reference count
   int mode;  // permission & type
   int size;  // bytes
   int block; // single block pointer (if max file size <= 4K)
+  time_t create_time; //make time
+  time_t mod_time; //last modify time
 } inode_t;
 
 void print_inode(inode_t *node);

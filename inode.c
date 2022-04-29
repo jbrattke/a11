@@ -39,6 +39,7 @@ int alloc_inode() {
   newNode->size = 0;
   newNode->refs = 1;
   newNode->block = alloc_block();
+  newNode->create_time = time(NULL);
 
   return nodeIndex;
 }

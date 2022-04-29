@@ -119,7 +119,6 @@ int storage_unlink(const char *path) {
   }
   memcpy(fileName, pathList->data, strlen(pathList->data));
   s_free(pathList);
-
   // fileName = basename(path);
   // filePath = dirname(path);
   
@@ -148,7 +147,6 @@ int storage_link(const char *from, const char *to) {
   }
   memcpy(fileName, pathList->data, strlen(pathList->data));
   s_free(pathList);
-
   // fileName = basename(from);
   // filePath = dirname(from);
 
@@ -164,6 +162,15 @@ int storage_rename(const char *from, const char *to) {
   return 0;
 }
 int storage_set_time(const char *path, const struct timespec ts[2]) {
+  int pathNodeIndex = tree_lookup(path);
+  if (pathNodeIndex == -1) {
+    return -ENOENT;
+  }
+
+  inode* pathNode = get_inode(pathNodeIndex);
+  pathNode->create_time = ts[0].tv_sec;
+  pathNode->mod_time = ts[1].tv_sec;
+
   return 0;
 }
 slist_t *storage_list(const char *path) {

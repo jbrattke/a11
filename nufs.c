@@ -60,56 +60,13 @@ int nufs_getattr(const char *path, struct stat *st) {
 // lists the contents of a directory
 int nufs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
                  off_t offset, struct fuse_file_info *fi) {
-
-  int pathNodeIndex = tree_lookup(path);
-  inode_t* pathNode = get_inode(pathNodeIndex);
-  print_directory(pathNode);
-
-  // for(int i = 0; i < pathNode->size / DIR_SIZE; i++) {
-  //   printf("Name : %s -- Node : %d -- Active : %d\n", pathDirec[i].name, pathDirec[i].inum, pathDirec[i].active);
-  // }
-
-  //--------------------------------------------------------------------
+  // int pathNodeIndex = tree_lookup(path);
+  // inode_t* pathNode = get_inode(pathNodeIndex);
+  // print_directory(pathNode);
   int rv = 0;
-
   rv = read_directory(path, buf, filler);
-
   printf("readdir(%s) -> %d\n", path, rv);
   return 0;
-
-  //--------------------------------------------------------------------
-  // struct stat st;
-  // int rv;
-
-  // rv = nufs_getattr(path, &st);
-  // assert(rv == 0);
-
-  // slist_t* pathFiles = storage_list(path);
-  // filler(buf, ".", &st, 0);
-  // if (dirnames == NULL) {
-  //   printf("readdir(%s) -> %d\n", path, rv);
-  //   return 0;
-  // }
-  
-  // while(pathFiles != NULL) {
-  //   char currpath[strlen(path) + 50];
-  //   strncpy(currpath, path, strlen(path));
-    
-  //   if (path[strlen(path)-1] == '/') {
-  //     currpath[strlen(path)] = 0;
-  //   } else {
-  //     currpath[strlen(path)] = '/';
-  //     currpath[strlen(path) + 1] = 0;
-  //   }
-    
-  //   strncat(currpath, currname->data, 48);
-  //   nufs_getattr(currpath, &st);
-  //   filler(buf, currname->data, &st, 0);
-  //   currname = currname->next;
-  // }
-
-  // printf("readdir(%s) -> %d\n", path, rv);
-  // s_free(dirnames);
 }
 
 // mknod makes a filesystem object like a file or directory
@@ -205,6 +162,7 @@ int nufs_write(const char *path, const char *buf, size_t size, off_t offset,
 // Update the timestamps on a file or directory.
 int nufs_utimens(const char *path, const struct timespec ts[2]) {
   int rv = -1;
+  rv = storage_set_time(path, ts);
   printf("utimens(%s, [%ld, %ld; %ld %ld]) -> %d\n", path, ts[0].tv_sec,
          ts[0].tv_nsec, ts[1].tv_sec, ts[1].tv_nsec, rv);
   return rv;

@@ -9,6 +9,7 @@
 
 #define DIR_NAME_LENGTH 48
 
+#include <fuse.h>
 #include "blocks.h"
 #include "inode.h"
 #include "slist.h"

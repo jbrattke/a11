@@ -1,12 +1,6 @@
-#include <assert.h>
-#include <bsd/string.h>
-#include <errno.h>
-#include <stdio.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <dirent.h>
+#include <stdio.h>
+#include <errno.h>
 #include <libgen.h>
 #include <dirent.h>
 #include "slist.h"
