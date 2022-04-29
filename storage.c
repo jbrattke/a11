@@ -41,6 +41,7 @@ int storage_stat(const char *path, struct stat *st) {
 int storage_read(const char *path, char *buf, size_t size, off_t offset) {
   inode_t* inodeIndex = get_inode(tree_lookup(path));
   char* readSrc = blocks_get_block(inodeIndex->block);
+  readSrc += offset;
   memcpy(buf, readSrc, size);
   return size;
 }
@@ -48,6 +49,7 @@ int storage_read(const char *path, char *buf, size_t size, off_t offset) {
 int storage_write(const char *path, const char *buf, size_t size, off_t offset) {
   inode_t* inodeIndex = get_inode(tree_lookup(path));
   char* writeSrc = blocks_get_block(inodeIndex->block);
+  writeSrc += offset;
   memcpy(writeSrc, buf, size);
   return size;
 }
@@ -114,7 +116,7 @@ int storage_unlink(const char *path) {
   
   filePath[0] = 0;
   while(pathList->next != NULL) {
-    strncat(filePath, pathList->data, 47);
+    strncat(filePath, pathList->data, 48;
     pathList = pathList->next;
   }
   strncpy(fileName, pathList->data + 1, strlen(pathList->data));
@@ -122,6 +124,8 @@ int storage_unlink(const char *path) {
   s_free(pathList);
   // fileName = basename(path);
   // filePath = dirname(path);
+
+  printf("UNLINK -- fn: %s -- fp: %s\n", fileName, filePath);
   
   inode_t* parent = get_inode(tree_lookup(filePath));
   int rv = directory_delete(parent, fileName);

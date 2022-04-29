@@ -83,7 +83,8 @@ int directory_put(inode_t *dd, const char *name, int inum) {
 
 int directory_delete(inode_t *dd, const char *name) {
   dirent_t* currentDirec = blocks_get_block(dd->block);
-  for (int i = 1; i < dd->size / DIR_SIZE; i++) {
+  for (int i = 0; i < dd->size / DIR_SIZE; i++) {
+    printf("DIREC: %s vs %s -- %d\n", currentDirec[i].name, name, currentDirec[i].active);
     if (strcmp(currentDirec[i].name, name) == 0 && currentDirec[i].active == 1) {
       currentDirec[i].active = 0;
       return 0;
