@@ -40,14 +40,14 @@ int storage_stat(const char *path, struct stat *st) {
 
 int storage_read(const char *path, char *buf, size_t size, off_t offset) {
   inode_t* inodeIndex = get_inode(tree_lookup(path));
-  char* readSrc = blocks_get_block(inode_get_pnum(inodeIndex, 0));
+  char* readSrc = blocks_get_block(inodeIndex->block);
   memcpy(buf, readSrc, size);
   return size;
 }
 
 int storage_write(const char *path, const char *buf, size_t size, off_t offset) {
   inode_t* inodeIndex = get_inode(tree_lookup(path));
-  char* writeSrc = blocks_get_block(inode_get_pnum(inodeIndex, 0));
+  char* writeSrc = blocks_get_block(inodeIndex->block);
   memcpy(writeSrc, buf, size);
   return size;
 }

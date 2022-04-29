@@ -46,7 +46,6 @@ int nufs_getattr(const char *path, struct stat *st) {
   }
   else {
     rv = storage_stat(path, st);
-    st->st_mode = 0100644;
     st->st_uid = getuid();
   }
   if (rv == -1) {
@@ -71,20 +70,14 @@ int nufs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
   // }
 
   //--------------------------------------------------------------------
-  // struct stat st;
-  // int rv;
+  struct stat st;
+  int rv = 0;
 
-  // rv = nufs_getattr("/", &st);
-  // assert(rv == 0);
+  filler(buf, "hello.txt", &st, 0);
+  filler(buf, "woopty.txt", &st, 0);
 
-  // filler(buf, ".", &st, 0);
-
-  // rv = nufs_getattr("/hello.txt", &st);
-  // assert(rv == 0);
-  // filler(buf, "hello.txt", &st, 0);
-
-  // printf("readdir(%s) -> %d\n", path, rv);
-  // return 0;
+  printf("readdir(%s) -> %d\n", path, rv);
+  return 0;
 
   //--------------------------------------------------------------------
   // struct stat st;
@@ -157,7 +150,7 @@ int nufs_link(const char *from, const char *to) {
 
 int nufs_rmdir(const char *path) {
   int rv = -1;
-  // rv = directory_delete(get_inode(tree_lookup(path)), )
+  rv = directory_delete(get_inode(tree_lookup(path)), basename(path));
   printf("rmdir(%s) -> %d\n", path, rv);
   return rv;
 }
