@@ -118,13 +118,11 @@ slist_t *directory_list(const char *path) {
       output = s_cons(pathDirec[i].name, output);
     }
   }
-  // printf("(directory_list) Path: %s -- Output: \n", path, output);
+  printf("(directory_list) Path: %s -- Output->data: %s\n", path, output->data);
   return output;
 }
 
 void print_directory(inode_t *dd) {
-  printf("print_directory executing\n");
-  
   dirent_t* pathDirec = blocks_get_block(dd->block);
 
   slist_t* output = NULL;
@@ -133,9 +131,7 @@ void print_directory(inode_t *dd) {
   }
 }
 
-int read_directory(const char *path, void *buf, fuse_fill_dir_t filler) {
-  printf("read_directory executing\n");
-  
+int read_directory(const char *path, void *buf, fuse_fill_dir_t filler) {  
   struct stat st;
   int pathNodeIndex = tree_lookup(path);
   inode_t* pathNode = get_inode(pathNodeIndex);
@@ -146,5 +142,6 @@ int read_directory(const char *path, void *buf, fuse_fill_dir_t filler) {
       filler(buf, pathDirec[i].name, &st, 0); 
     }
   }
+  printf("(read_directory) Path: %s\n", path);
   return 0;
 }
