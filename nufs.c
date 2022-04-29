@@ -137,6 +137,7 @@ int nufs_rmdir(const char *path) {
 // called to move a file within the same filesystem
 int nufs_rename(const char *from, const char *to) {
   int rv = -1;
+  rv = storage_rename(from, to);
   printf("rename(%s => %s) -> %d\n", from, to, rv);
   return rv;
 }

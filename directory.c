@@ -24,6 +24,7 @@ int directory_lookup(inode_t *dd, const char *name) {
   if (strcmp(name, "") == 0 || strcmp(name, "/") == 0) { //root dir
     printf("(directory_lookup) ROOT DIRECTORY: %d\n", rootNodeIndex);
     return 0; //bc root directory is in inode 0
+    //NOTE: doing this bc we want the files to stay over mounts/unmounts(otherwise would use rootNodeIndex)
   } else {
   
     dirent_t* directories = blocks_get_block(dd->block);
