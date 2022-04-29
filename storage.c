@@ -77,7 +77,8 @@ int storage_mknod(const char *path, int mode) {
     strncat(filePath, pathList->data, 47);
     pathList = pathList->next;
   }
-  memcpy(fileName, pathList->data, strlen(pathList->data));
+  strncpy(fileName, pathList->data + 1, strlen(pathList->data));
+  memcpy(fileName, fileName, strlen(pathList->data));
   s_free(pathList);
   // fileName = basename(path);
   // filePath = dirname(path);

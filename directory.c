@@ -117,3 +117,14 @@ void print_directory(inode_t *dd) {
     printf("Name : %s -- Node : %d -- Active : %d\n", pathDirec[i].name, pathDirec[i].inum, pathDirec[i].active);
   }
 }
+
+int read_directory(const char *path, void *buf) {
+  int pathNodeIndex = tree_lookup(path);
+  inode_t* pathNode = get_inode(pathNodeIndex);
+  dirent_t* pathDirec = blocks_get_block(pathNode->block);
+
+  for(int i = 0; i < pathNode->size / DIR_SIZE; i++) {
+    filler(buf, pathDirec[i].name, &st, 0);
+  }
+  return 0;
+}
