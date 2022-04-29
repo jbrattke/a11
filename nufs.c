@@ -70,13 +70,9 @@ int nufs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
   // }
 
   //--------------------------------------------------------------------
-  struct stat st;
   int rv = 0;
 
-  rv = read_directory(path, buf);
-
-  filler(buf, "hello.txt", &st, 0);
-  filler(buf, "woopty.txt", &st, 0);
+  rv = read_directory(path, buf, filler);
 
   printf("readdir(%s) -> %d\n", path, rv);
   return 0;
@@ -114,7 +110,6 @@ int nufs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 
   // printf("readdir(%s) -> %d\n", path, rv);
   // s_free(dirnames);
-  return 0;
 }
 
 // mknod makes a filesystem object like a file or directory

@@ -13,7 +13,7 @@
 #include "inode.h"
 #include "slist.h"
 
-typedef struct dirent {
+typedef struct dirent_t {
   char name[DIR_NAME_LENGTH];
   int inum;
   int active;
@@ -27,5 +27,6 @@ int directory_put(inode_t *dd, const char *name, int inum);
 int directory_delete(inode_t *dd, const char *name);
 slist_t *directory_list(const char *path);
 void print_directory(inode_t *dd);
+int read_directory(const char *path, void *buf, fuse_fill_dir_t filler);
 
 #endif

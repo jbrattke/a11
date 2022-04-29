@@ -1,6 +1,12 @@
-#include <string.h>
-#include <stdio.h>
+#include <assert.h>
+#include <bsd/string.h>
 #include <errno.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <dirent.h>
 #include <libgen.h>
 #include <dirent.h>
 #include "slist.h"
@@ -118,7 +124,8 @@ void print_directory(inode_t *dd) {
   }
 }
 
-int read_directory(const char *path, void *buf) {
+int read_directory(const char *path, void *buf, fuse_fill_dir_t filler) {
+  struct stat st;
   int pathNodeIndex = tree_lookup(path);
   inode_t* pathNode = get_inode(pathNodeIndex);
   dirent_t* pathDirec = blocks_get_block(pathNode->block);
