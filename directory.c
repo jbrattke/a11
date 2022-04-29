@@ -12,6 +12,7 @@
 const int DIR_SIZE = sizeof(dirent_t); //directory size
 int rootNodeIndex = -1;
 
+//init root directory
 void directory_init() {
   rootNodeIndex = alloc_inode();
   printf("(directory_init) executing: root node at %d\n", rootNodeIndex);
@@ -122,6 +123,7 @@ slist_t *directory_list(const char *path) {
   return output;
 }
 
+//print directory into console
 void print_directory(inode_t *dd) {
   dirent_t* pathDirec = blocks_get_block(dd->block);
 
@@ -131,6 +133,7 @@ void print_directory(inode_t *dd) {
   }
 }
 
+//read directory into buf
 int read_directory(const char *path, void *buf, fuse_fill_dir_t filler) {  
   struct stat st;
   int pathNodeIndex = tree_lookup(path);

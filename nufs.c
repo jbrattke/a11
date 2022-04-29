@@ -65,11 +65,6 @@ int nufs_getattr(const char *path, struct stat *st) {
 // lists the contents of a directory
 int nufs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
                  off_t offset, struct fuse_file_info *fi) {
-  
-  
-  // int pathNodeIndex = tree_lookup(path);
-  // inode_t* pathNode = get_inode(pathNodeIndex);
-  // print_directory(pathNode);
   int rv = 0;
   rv = read_directory(path, buf, filler);
   printf("readdir(%s) -> %d\n", path, rv);
@@ -95,6 +90,7 @@ int nufs_mkdir(const char *path, mode_t mode) {
   return rv;
 }
 
+//unlink path
 int nufs_unlink(const char *path) {
   int rv = -1;
   rv = storage_unlink(path);
@@ -102,6 +98,7 @@ int nufs_unlink(const char *path) {
   return rv;
 }
 
+//link paths together
 int nufs_link(const char *from, const char *to) {
   int rv = -1;
   rv = storage_link(to, from);
@@ -109,6 +106,7 @@ int nufs_link(const char *from, const char *to) {
   return rv;
 }
 
+//delete directory
 int nufs_rmdir(const char *path) {
   int rv = -1;
 
@@ -124,6 +122,7 @@ int nufs_rmdir(const char *path) {
   strncpy(fileName, pathList->data, strlen(pathList->data));
   memcpy(fileName, fileName, strlen(pathList->data));
   s_free(pathList);
+  // fileName = basename(path);   // filePath = dirname(path);
   
   rv = directory_delete(get_inode(tree_lookup(filePath)), fileName);
   printf("rmdir(%s) -> %d ---- %s -- %s\n", path, rv, fileName, filePath);
@@ -142,12 +141,14 @@ int nufs_rename(const char *from, const char *to) {
   return rv;
 }
 
+//changed permissions(not used)
 int nufs_chmod(const char *path, mode_t mode) {
   int rv = -1;
   printf("chmod(%s, %04o) -> %d\n", path, mode, rv);
   return rv;
 }
 
+//change path file size
 int nufs_truncate(const char *path, off_t size) {
   int rv = -1;
   rv = storage_truncate(path, size);

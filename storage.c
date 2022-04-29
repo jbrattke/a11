@@ -24,7 +24,7 @@ void storage_init(const char *path) {
   directory_init();
 }
 
-
+//find path file stats
 int storage_stat(const char *path, struct stat *st) {  
   int rv = tree_lookup(path);
   if(rv != -1) {
@@ -39,6 +39,7 @@ int storage_stat(const char *path, struct stat *st) {
   return -1;
 }
 
+//nufs truncate helper - truncates file at path to size 'size'
 int storage_truncate(const char *path, off_t size) {
   int pathNodeIndex = tree_lookup(path);
   inode_t* pathNode = get_inode(pathNodeIndex);
@@ -51,6 +52,7 @@ int storage_truncate(const char *path, off_t size) {
   return 0;
 }
 
+//read data from path with size 'size' into buf
 int storage_read(const char *path, char *buf, size_t size, off_t offset) {
   inode_t* pathNode = get_inode(tree_lookup(path));
   char* readSrc = blocks_get_block(pathNode->block);
@@ -61,6 +63,7 @@ int storage_read(const char *path, char *buf, size_t size, off_t offset) {
   return size;
 }
 
+//write to path from buf
 int storage_write(const char *path, const char *buf, size_t size, off_t offset) {
   inode_t* pathNode = get_inode(tree_lookup(path));
   if (pathNode->size < size + offset) {
@@ -73,6 +76,7 @@ int storage_write(const char *path, const char *buf, size_t size, off_t offset) 
   return size;
 }
 
+//create file/directory
 int storage_mknod(const char *path, int mode) {
   if (tree_lookup(path) != -1) { //check if path already exists
     printf("(storage_mknod) ALREADY EXISTS -- Path: %s\n", path);
@@ -91,8 +95,7 @@ int storage_mknod(const char *path, int mode) {
   strncpy(fileName, pathList->data, strlen(pathList->data));
   memcpy(fileName, fileName, strlen(pathList->data));
   s_free(pathList);
-  // fileName = basename(path);
-  // filePath = dirname(path);
+  // fileName = basename(path);   // filePath = dirname(path);
   
   printf("fn: %s -- fp: %s\n", fileName, filePath);
 
@@ -132,8 +135,7 @@ int storage_unlink(const char *path) {
   strncpy(fileName, pathList->data, strlen(pathList->data));
   memcpy(fileName, fileName, strlen(pathList->data));
   s_free(pathList);
-  // fileName = basename(path);
-  // filePath = dirname(path);
+  // fileName = basename(path);   // filePath = dirname(path);
 
   printf("UNLINK -- fn: %s -- fp: %s\n", fileName, filePath);
   
@@ -163,8 +165,7 @@ int storage_link(const char *from, const char *to) {
   strncpy(fileName, pathList->data, strlen(pathList->data));
   memcpy(fileName, fileName, strlen(pathList->data));
   s_free(pathList);
-  // fileName = basename(from);
-  // filePath = dirname(from);
+  // fileName = basename(from);   // filePath = dirname(from);
 
   printf("(storage_link) From: %s -- To: %s -- FileName: %s -- FilePath: %s\n", from, to, fileName, filePath);
 
@@ -176,12 +177,16 @@ int storage_link(const char *from, const char *to) {
   free(filePath);
   return 0;
 }
+
+//rename/move file at 'from' to 'to'
 int storage_rename(const char *from, const char *to) {
   printf("(storage_rename) From: %s -- To: %s\n", from, to);
   storage_link(to, from);
   storage_unlink(from);
   return 0;
 }
+
+//set file at path time
 int storage_set_time(const char *path, const struct timespec ts[2]) {
   int pathNodeIndex = tree_lookup(path);
   if (pathNodeIndex == -1) {
