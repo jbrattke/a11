@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <libgen.h>
 
 #define FUSE_USE_VERSION 26
 #include <fuse.h>
@@ -64,9 +65,11 @@ int nufs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
   inode_t* pathNode = get_inode(pathNodeIndex);
   print_directory(pathNode);
 
-  for(int i = 0; i < pathNode->size / DIR_SIZE; i++) {
-    printf("Name : %s -- Node : %d -- Active : %d\n", pathDirec[i].name, pathDirec[i].inum, pathDirec[i].active);
-  }
+  // for(int i = 0; i < pathNode->size / DIR_SIZE; i++) {
+  //   printf("Name : %s -- Node : %d -- Active : %d\n", pathDirec[i].name, pathDirec[i].inum, pathDirec[i].active);
+  // }
+
+  
   // struct stat st;
   // int rv;
 
@@ -81,38 +84,40 @@ int nufs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 
   // printf("readdir(%s) -> %d\n", path, rv);
   // return 0;
-  struct stat st;
-  int rv;
 
-  rv = nufs_getattr(path, &st);
-  assert(rv == 0);
+  //--------------------------------------------------------------------
+  // struct stat st;
+  // int rv;
 
-  slist_t* pathFiles = storage_list(path);
-  filler(buf, ".", &st, 0);
-  if (dirnames == NULL) {
-    printf("readdir(%s) -> %d\n", path, rv);
-    return 0;
-  }
+  // rv = nufs_getattr(path, &st);
+  // assert(rv == 0);
+
+  // slist_t* pathFiles = storage_list(path);
+  // filler(buf, ".", &st, 0);
+  // if (dirnames == NULL) {
+  //   printf("readdir(%s) -> %d\n", path, rv);
+  //   return 0;
+  // }
   
-  while(pathFiles != NULL) {
-    char currpath[strlen(path) + 50];
-    strncpy(currpath, path, strlen(path));
+  // while(pathFiles != NULL) {
+  //   char currpath[strlen(path) + 50];
+  //   strncpy(currpath, path, strlen(path));
     
-    if (path[strlen(path)-1] == '/') {
-      currpath[strlen(path)] = 0;
-    } else {
-      currpath[strlen(path)] = '/';
-      currpath[strlen(path) + 1] = 0;
-    }
+  //   if (path[strlen(path)-1] == '/') {
+  //     currpath[strlen(path)] = 0;
+  //   } else {
+  //     currpath[strlen(path)] = '/';
+  //     currpath[strlen(path) + 1] = 0;
+  //   }
     
-    strncat(currpath, currname->data, 48);
-    nufs_getattr(currpath, &st);
-    filler(buf, currname->data, &st, 0);
-    currname = currname->next;
-  }
+  //   strncat(currpath, currname->data, 48);
+  //   nufs_getattr(currpath, &st);
+  //   filler(buf, currname->data, &st, 0);
+  //   currname = currname->next;
+  // }
 
-  printf("readdir(%s) -> %d\n", path, rv);
-  s_free(dirnames);
+  // printf("readdir(%s) -> %d\n", path, rv);
+  // s_free(dirnames);
   return 0;
 }
 

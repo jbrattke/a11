@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <libgen.h>
 #include "inode.h"
 #include "blocks.h"
 #include "bitmap.h"
