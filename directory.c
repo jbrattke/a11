@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <libgen.h>
+#include <dirent.h>
 #include "slist.h"
 #include "blocks.h"
 #include "inode.h"

@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
+#include <dirent.h>
 #include <libgen.h>
 #include "slist.h"
 #include "blocks.h"
