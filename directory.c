@@ -32,7 +32,7 @@ int directory_lookup(inode_t *dd, const char *name) {
     for(int i = 0; i < 32; i++) {
       dirent_t subdir = directories[i];
       if (strcmp(name, subdir.name) == 0) {
-        printf("directory_lookup NAME FOUND: %d\n", subdir.inum);
+        printf("directory_lookup NAME FOUND: %s -- Index: %d\n", name, subdir.inum);
         return subdir.inum; //name found
       }
     }
@@ -45,9 +45,8 @@ int directory_lookup(inode_t *dd, const char *name) {
 
 // Search for given path from root, return inode index, -1 on failure
 int tree_lookup(const char *path) {
-  printf("tree_lookup executing\n");
-  
   if (strcmp(path, "") == 0 || strcmp(path, "/") == 0) {
+    printf("tree_lookup ROOT: %d\n", rootNodeIndex);
     return rootNodeIndex;
   }
   int inodeIndex = 0;
@@ -60,13 +59,12 @@ int tree_lookup(const char *path) {
   }
   
   s_free(explodedPath);
+  printf("tree_lookup inodeIndex: %d\n", inodeIndex);
   return inodeIndex;
 }
 
 // Inserts a new directory
 int directory_put(inode_t *dd, const char *name, int inum) {
-  printf("directory_put executing\n");
-  
   dirent_t* currentDirec = blocks_get_block(dd->block);
 
   dirent_t newDirec;
@@ -87,18 +85,19 @@ int directory_put(inode_t *dd, const char *name, int inum) {
     dd->size += DIR_SIZE;
   }
 
+  printf("directory_put (always returns 0): %d\n", 0);
+
   return 0;
 }
 
 
 int directory_delete(inode_t *dd, const char *name) {
-  printf("directory_delete executing\n");
-  
   dirent_t* currentDirec = blocks_get_block(dd->block);
   for (int i = 0; i < dd->size / DIR_SIZE; i++) {
     printf("DIREC: %s vs %s -- %d\n", currentDirec[i].name, name, currentDirec[i].active);
     if (strcmp(currentDirec[i].name, name) == 0 && currentDirec[i].active == 1) {
       currentDirec[i].active = 0;
+      printf("directory_delete (currentDirec[i].name = given name && currentDirec[i].active == 1) return 0: %d\n", 0);
       return 0;
     }
   }
@@ -108,8 +107,6 @@ int directory_delete(inode_t *dd, const char *name) {
 
 // Gives the list of directories at the given path
 slist_t *directory_list(const char *path) {
-  printf("directory_list executing\n");
-  
   int pathNodeIndex = tree_lookup(path);
   inode_t* pathNode = get_inode(pathNodeIndex);
 
@@ -121,6 +118,7 @@ slist_t *directory_list(const char *path) {
       output = s_cons(pathDirec[i].name, output);
     }
   }
+  printf("directory_list s: \n");
   return output;
 }
 

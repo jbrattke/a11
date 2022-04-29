@@ -21,7 +21,7 @@
 // implementation for: man 2 access
 // Checks if a file exists.
 int nufs_access(const char *path, int mask) {
-  printf("nufs_access executing");
+  printf("nufs_access executing\n");
   
   int rv = tree_lookup(path);
   if (rv != -1) {
@@ -37,7 +37,7 @@ int nufs_access(const char *path, int mask) {
 // Implementation for: man 2 stat
 // This is a crucial function.
 int nufs_getattr(const char *path, struct stat *st) {
-  printf("nufs_getattr executing");
+  printf("nufs_getattr executing\n");
   
   int rv = 0;
 
